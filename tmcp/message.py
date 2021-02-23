@@ -64,17 +64,24 @@ class TMCPMessage:
         try:
             team: int = message["team"]
             index: int = message["index"]
+            assert isinstance(team, int)
+            assert isinstance(index, int)
 
             action: dict = message["action"]
             action_type: ActionType = ActionType(action["type"])
 
             if action_type == ActionType.BALL:
+                assert isinstance(action["time"], (float, int))
                 msg = cls.ball_action(team, index, action["time"])
             elif action_type == ActionType.BOOST:
+                assert isinstance(action["target"], int)
                 msg = cls.boost_action(team, index, action["target"])
             elif action_type == ActionType.DEMO:
+                assert isinstance(action["target"], int)
+                assert isinstance(action["time"], (float, int))
                 msg = cls.demo_action(team, index, action["target"], action["time"])
             elif action_type == ActionType.WAIT:
+                assert isinstance(action["ready"], (float, int))
                 msg = cls.wait_action(team, index, action["ready"])
             elif action_type == ActionType.DEFEND:
                 msg = cls.defend_action(team, index)
@@ -82,7 +89,7 @@ class TMCPMessage:
                 raise NotImplementedError
             return msg
 
-        except (KeyError, ValueError):
+        except (KeyError, ValueError, AssertionError):
             return None
 
     def to_dict(self) -> dict:
