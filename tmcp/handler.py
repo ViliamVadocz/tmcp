@@ -49,20 +49,37 @@ class TMCPHandler:
         self.matchcomms: MatchcommsClient = agent.matchcomms
         self.index: int = agent.index
         self.team: int = agent.team
-        self.last_time: float = 0.0
+        self.last_time: float = 0.0 
+        self.enabled: bool = True
+
+    def disable(self):
+        """Disable the handler. It will not send or receive any messages."""
+        self.enabled = False
 
     def send(self, message: TMCPMessage) -> bool:
         """Send a TMCPMessage over match comms. Will not send messages if they are coming too quickly.
         Returns whether a message was sent."""
+
+        # If disabled, pretend all messages are sent.
+        # This is done so that people don't try to resend messages if the handler is disabled.
+        if not self.enabled:
+            return True
+
         current_time = perf_counter()
         if current_time - self.last_time < TIME_BETWEEN_MESSAGES:
             return False
+
         self.matchcomms.outgoing_broadcast.put_nowait(message.to_dict())
         self.last_time: float = current_time
         return True
 
     def recv(self) -> List[TMCPMessage]:
         messages = []
+
+        # Return empty message list if disabled.
+        if not self.enabled:
+            return messages
+
         # Receive messages until we reach the maximum packets per tick or the queue is empty.
         for _ in range(MAX_PACKETS_PER_TICK):
             try:
