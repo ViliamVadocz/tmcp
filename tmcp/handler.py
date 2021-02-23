@@ -27,7 +27,7 @@ class TMCPHandler:
 
     ```
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
-        # Receive and parse all new matchcomms messages into TMCPMessage objects
+        # Receive and parse all new matchcomms messages into TMCPMessage objects.
         new_messages: List[TMCPMessage] = self.tmcp_handler.recv()
         # Handle TMCPMessages.
         for message in new_messages:
