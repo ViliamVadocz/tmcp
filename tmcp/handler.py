@@ -5,7 +5,8 @@ from typing import List, Optional
 from rlbot.agents.base_agent import BaseAgent
 from rlbot.matchcomms.client import MatchcommsClient
 
-from tmcp import TMCP_VERSION, TMCPMessage
+from tmcp import TMCP_VERSION
+from .message import TMCPMessage
 
 
 MAX_PACKETS_PER_TICK: int = 50
