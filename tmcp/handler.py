@@ -5,7 +5,7 @@ from typing import List, Optional
 from rlbot.agents.base_agent import BaseAgent
 from rlbot.matchcomms.client import MatchcommsClient
 
-from .message import TMCPMessage
+from tmcp.message import TMCPMessage
 
 
 MAX_PACKETS_PER_TICK: int = 50
@@ -27,17 +27,21 @@ class TMCPHandler:
 
     ```
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
+        # Receive and parse all new matchcomms messages into TMCPMessage objects
         new_messages: List[TMCPMessage] = self.tmcp_handler.recv()
-        if new_messages:
-            # Handle TMCPMessages.
-            ...
+        # Handle TMCPMessages.
+        for message in new_messages:
+            if message.action_type == ActionType.BALL:
+                print(message.time)
+        
+        ...
 
         # You can send messages like this.
-        self.tmcp_handler.send_wait_action()
+        self.tmcp_handler.send_boost_action(pad_index)
 
         # Or you can create them and send them more directly:
-        my_message = TMCPMessage.ball_action(self.team, self.index, 123.45)
-        self.send(my_message)
+        my_message = TMCPMessage.ball_action(self.team, self.index, estimated_time_of_arrival)
+        self.tmcp_handler.send(my_message)
     ```
     """
 
