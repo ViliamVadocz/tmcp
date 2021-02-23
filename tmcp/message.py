@@ -9,6 +9,7 @@ class ActionType(Enum):
     BOOST = "BOOST"
     DEMO = "DEMO"
     WAIT = "WAIT"
+    DEFEND = "DEFEND"
 
 
 class TMCPMessage:
@@ -48,8 +49,14 @@ class TMCPMessage:
         return self
 
     @classmethod
-    def wait_action(cls, team: int, index: int) -> "TMCPMessage":
+    def wait_action(cls, team: int, index: int, ready: float = -1.0) -> "TMCPMessage":
         self = cls(team, index, ActionType.WAIT)
+        self.ready = ready
+        return self
+
+    @classmethod
+    def defend_action(cls, team: int, index: int) -> "TMCPMessage":
+        self = cls(team, index, ActionType.DEMO)
         return self
 
     @classmethod
@@ -68,7 +75,9 @@ class TMCPMessage:
             elif action_type == ActionType.DEMO:
                 msg = cls.demo_action(team, index, action["target"], action["time"])
             elif action_type == ActionType.WAIT:
-                msg = cls.wait_action(team, index)
+                msg = cls.wait_action(team, index, action["ready"])
+            elif action_type == ActionType.DEFEND:
+                msg = cls.defend_action(team, index)
             else:
                 raise NotImplementedError
             return msg
@@ -94,7 +103,14 @@ class TMCPMessage:
                 "time": self.time,
             }
         elif self.action_type == ActionType.WAIT:
-            action = {"type": "WAIT"}
+            action = {
+                "type": "WAIT",
+                "ready": self.ready,
+            }
+        elif self.action_type == ActionType.DEFEND:
+            action = {
+                "type": "DEFEND"
+            }
         else:
             raise NotImplementedError
 
