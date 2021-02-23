@@ -9,7 +9,7 @@ from tmcp import TMCP_VERSION
 from .message import TMCPMessage
 
 
-MAX_PACKETS_PER_TICK: int = 50
+MAX_PACKETS_PER_TICK: int = 30
 TIME_BETWEEN_MESSAGES: float = 0.1
 
 
