@@ -5,12 +5,11 @@ from typing import List, Optional
 from rlbot.agents.base_agent import BaseAgent
 from rlbot.matchcomms.client import MatchcommsClient
 
-from tmcp.message import TMCPMessage
+from tmcp import TMCP_VERSION, TMCPMessage
 
 
 MAX_PACKETS_PER_TICK: int = 50
 TIME_BETWEEN_MESSAGES: float = 0.1
-TMCP_VERSION = [0, 5]
 
 
 class TMCPHandler:

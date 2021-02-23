@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional
 
-from tmcp.handler import TMCP_VERSION
+from tmcp import TMCP_VERSION
 
 
 class ActionType(Enum):
