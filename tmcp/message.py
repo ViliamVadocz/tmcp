@@ -56,7 +56,7 @@ class TMCPMessage:
 
     @classmethod
     def defend_action(cls, team: int, index: int) -> "TMCPMessage":
-        self = cls(team, index, ActionType.DEMO)
+        self = cls(team, index, ActionType.DEFEND)
         return self
 
     @classmethod
