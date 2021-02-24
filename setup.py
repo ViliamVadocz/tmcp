@@ -6,7 +6,7 @@ with open("README.md", "r") as readme_file:
 setup(
     name="tmcp",
     packages=["tmcp"],
-    version="0.7.2",
+    version="0.7.3",
     license="MIT",
     description="Helper classes for the Team Match Communication Protocol.",
     long_description=long_description,
@@ -14,7 +14,7 @@ setup(
     author="Viliam Vadocz",
     author_email="viliam.vadocz@gmail.com",
     url="https://github.com/ViliamVadocz/tmcp/",
-    download_url="https://github.com/ViliamVadocz/tmcp/archive/v_0_7_2.tar.gz",
+    download_url="https://github.com/ViliamVadocz/tmcp/archive/v_0_7_3.tar.gz",
     keywords=["RLBot", "protocol"],
     install_requires=["rlbot"],
     classifiers=[
