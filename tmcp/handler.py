@@ -69,6 +69,7 @@ class TMCPHandler:
         if current_time - self.last_time < TIME_BETWEEN_MESSAGES:
             return False
 
+        assert isinstance(message, TMCPMessage)
         self.matchcomms.outgoing_broadcast.put_nowait(message.to_dict())
         self.last_time: float = current_time
         return True
