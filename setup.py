@@ -14,7 +14,7 @@ setup(
     author="Viliam Vadocz",
     author_email="viliam.vadocz@gmail.com",
     url="https://github.com/ViliamVadocz/tmcp/",
-    download_url="https://github.com/ViliamVadocz/tmcp/archive/v_0_7_3.tar.gz",
+    download_url="https://github.com/ViliamVadocz/tmcp/archive/v_0_8_0.tar.gz",
     keywords=["RLBot", "protocol"],
     install_requires=["rlbot"],
     classifiers=[
