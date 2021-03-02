@@ -130,19 +130,22 @@ class TMCPHandler:
             msg = TMCPMessage.demo_action(self.team, self.index, target, time)
         return self.send(msg)
 
-    def send_wait_action(self, ready: float) -> bool:
+    def send_ready_action(self, time: Optional[float] = None) -> bool:
         """The bot is waiting for a chance to go for the ball.
         Some examples are positioning (retreating/shadowing) and recovering.
 
-        `ready` - A value of -1 signifies that the bot is NOT ready to go for the ball.
-        Otherwise, the ready value indicates the projected intercept time in game time
-        if the bot was to go for the ball.
+        `ready` - Game time when the bot could arrive at the ball (if it was to go for it).
         """
-        return self.send(TMCPMessage.wait_action(self.team, self.index, ready))
+        if time is None:
+            msg = TMCPMessage.ready_action(self.team, self.index)
+        else:
+            msg = TMCPMessage.ready_action(self.team, self.index, time)
+        return self.send(msg)
 
     def send_defend_action(self) -> bool:
         """The bot is in a position to defend the goal and is not planning to move up.
-        If the bot decides to leave net, signal this using either "BALL" (if going for a touch) or "WAIT" (if moving upfield).
+        Only use DEFEND if your bot is in place to defend, not if still en-route.
+        If the bot decides to leave net, signal this using either "BALL" (if going for a touch) or "READY" (if moving upfield).
 
         A bot should use "DEFEND" to let its teammates know it is safe to move up a bit without worrying about an open net.
         """

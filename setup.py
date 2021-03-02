@@ -6,7 +6,7 @@ with open("README.md", "r") as readme_file:
 setup(
     name="tmcp",
     packages=["tmcp"],
-    version="0.7.3",
+    version="0.8.0",
     license="MIT",
     description="Helper classes for the Team Match Communication Protocol.",
     long_description=long_description,

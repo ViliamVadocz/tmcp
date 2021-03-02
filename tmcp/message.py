@@ -8,7 +8,7 @@ class ActionType(Enum):
     BALL = "BALL"
     BOOST = "BOOST"
     DEMO = "DEMO"
-    WAIT = "WAIT"
+    READY = "READY"
     DEFEND = "DEFEND"
 
 
@@ -49,9 +49,9 @@ class TMCPMessage:
         return self
 
     @classmethod
-    def wait_action(cls, team: int, index: int, ready: float) -> "TMCPMessage":
-        self = cls(team, index, ActionType.WAIT)
-        self.ready = ready
+    def ready_action(cls, team: int, index: int, time: float) -> "TMCPMessage":
+        self = cls(team, index, ActionType.READY)
+        self.time = time
         return self
 
     @classmethod
@@ -80,9 +80,9 @@ class TMCPMessage:
                 assert isinstance(action["target"], int)
                 assert isinstance(action["time"], (float, int))
                 msg = cls.demo_action(team, index, action["target"], action["time"])
-            elif action_type == ActionType.WAIT:
-                assert isinstance(action["ready"], (float, int))
-                msg = cls.wait_action(team, index, action["ready"])
+            elif action_type == ActionType.READY:
+                assert isinstance(action["time"], (float, int))
+                msg = cls.ready_action(team, index, action["time"])
             elif action_type == ActionType.DEFEND:
                 msg = cls.defend_action(team, index)
             else:
@@ -109,10 +109,10 @@ class TMCPMessage:
                 "target": self.target,
                 "time": self.time,
             }
-        elif self.action_type == ActionType.WAIT:
+        elif self.action_type == ActionType.READY:
             action = {
-                "type": "WAIT",
-                "ready": self.ready,
+                "type": "READY",
+                "time": self.time,
             }
         elif self.action_type == ActionType.DEFEND:
             action = {
