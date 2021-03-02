@@ -72,17 +72,17 @@ class TMCPMessage:
 
             if action_type == ActionType.BALL:
                 assert isinstance(action["time"], (float, int))
-                msg = cls.ball_action(team, index, action["time"])
+                msg = cls.ball_action(team, index, float(action["time"]))
             elif action_type == ActionType.BOOST:
                 assert isinstance(action["target"], int)
                 msg = cls.boost_action(team, index, action["target"])
             elif action_type == ActionType.DEMO:
                 assert isinstance(action["target"], int)
                 assert isinstance(action["time"], (float, int))
-                msg = cls.demo_action(team, index, action["target"], action["time"])
+                msg = cls.demo_action(team, index, action["target"], float(action["time"]))
             elif action_type == ActionType.READY:
                 assert isinstance(action["time"], (float, int))
-                msg = cls.ready_action(team, index, action["time"])
+                msg = cls.ready_action(team, index, float(action["time"]))
             elif action_type == ActionType.DEFEND:
                 msg = cls.defend_action(team, index)
             else:
