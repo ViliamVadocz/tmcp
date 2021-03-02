@@ -71,7 +71,7 @@ To avoid your bot breaking during tournaments, you can use a virtual_environment
 In your requirements.txt:
 
 ```txt
-tmcp==0.7
+tmcp==0.8
 ```
 
 In your bot.cfg:
@@ -86,8 +86,8 @@ If you don't want to do this, you can also disable the handler if a different ve
 This will not send or receive any messages, but will pretend as if it was sending all and receiving none.
 
 ```py
-from tcmp import TCMP_VERSION
+from tmcp import TMCP_VERSION
 
-if TCMP_VERSION != [0, 7]:
+if TMCP_VERSION != [0, 8]:
     my_handler.disable()
 ```
