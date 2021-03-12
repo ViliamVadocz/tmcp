@@ -49,7 +49,7 @@ class TMCPMessage:
         return self
 
     @classmethod
-    def ready_action(cls, team: int, index: int, time: float) -> "TMCPMessage":
+    def ready_action(cls, team: int, index: int, time: float = -1.0) -> "TMCPMessage":
         self = cls(team, index, ActionType.READY)
         self.time = time
         return self
