@@ -1,7 +1,8 @@
 from enum import Enum
-from typing import Optional
+from typing import Optional, Any
 
 from tmcp import TMCP_VERSION
+from .convert import try_convert_direction
 
 
 class ActionType(Enum):
@@ -28,9 +29,12 @@ class TMCPMessage:
         self.action_type = action_type
 
     @classmethod
-    def ball_action(cls, team: int, index: int, time: float = -1.0) -> "TMCPMessage":
+    def ball_action(
+        cls, team: int, index: int, time: float = -1.0, direction: Any = [0.0, 0.0, 0.0]
+    ) -> "TMCPMessage":
         self = cls(team, index, ActionType.BALL)
         self.time = time
+        self.direction = try_convert_direction(direction)
         return self
 
     @classmethod
@@ -79,10 +83,15 @@ class TMCPMessage:
             elif action_type == ActionType.DEMO:
                 assert isinstance(action["target"], int)
                 assert isinstance(action["time"], (float, int))
-                msg = cls.demo_action(team, index, action["target"], float(action["time"]))
+                msg = cls.demo_action(
+                    team, index, action["target"], float(action["time"])
+                )
             elif action_type == ActionType.READY:
                 assert isinstance(action["time"], (float, int))
-                msg = cls.ready_action(team, index, float(action["time"]))
+                # assert isinstance(action["direction"], (list, tuple))
+                msg = cls.ready_action(
+                    team, index, float(action["time"]), try_convert_direction(action["direction"])
+                )
             elif action_type == ActionType.DEFEND:
                 msg = cls.defend_action(team, index)
             else:
@@ -97,6 +106,7 @@ class TMCPMessage:
             action = {
                 "type": "BALL",
                 "time": self.time,
+                "direction": self.direction
             }
         elif self.action_type == ActionType.BOOST:
             action = {

@@ -1,6 +1,6 @@
 from time import perf_counter
 from queue import Empty
-from typing import List, Optional
+from typing import List, Optional, Any
 
 from rlbot.agents.base_agent import BaseAgent
 from rlbot.matchcomms.client import MatchcommsClient
@@ -49,7 +49,7 @@ class TMCPHandler:
         self.matchcomms: MatchcommsClient = agent.matchcomms
         self.index: int = agent.index
         self.team: int = agent.team
-        self.last_time: float = 0.0 
+        self.last_time: float = 0.0
         self.enabled: bool = True
 
     def disable(self):
@@ -101,16 +101,20 @@ class TMCPHandler:
 
         return TMCPMessage.from_dict(message)
 
-    def send_ball_action(self, time: Optional[float] = None) -> bool:
+    def send_ball_action(
+        self, time: Optional[float] = None, direction: Optional[Any] = None
+    ) -> bool:
         """The bot is going for the ball.
 
         `time` - Game time that your bot will arrive at the ball.
+        `direction` - Anticipated normalized direction of ball travel AFTER contact is made.
         """
-        if time is None:
-            msg = TMCPMessage.ball_action(self.team, self.index)
-        else:
-            msg = TMCPMessage.ball_action(self.team, self.index, time)
-        return self.send(msg)
+        kwargs = {}
+        if time is not None:
+            kwargs["time"] = time
+        if direction is not None:
+            kwargs["direction"] = direction
+        return self.send(TMCPMessage.ball_action(self.team, self.index, **kwargs))
 
     def send_boost_action(self, target: int) -> bool:
         """The bot is going for boost.
@@ -125,11 +129,12 @@ class TMCPHandler:
         `target` - Index of the bot that will be demoed.
         `time` - Game time that the bot will demo the other bot.
         """
-        if time is None:
-            msg = TMCPMessage.demo_action(self.team, self.index, target)
-        else:
-            msg = TMCPMessage.demo_action(self.team, self.index, target, time)
-        return self.send(msg)
+        kwargs = {}
+        if time is not None:
+            kwargs["time"] = time
+        return self.send(
+            TMCPMessage.demo_action(self.team, self.index, target, **kwargs)
+        )
 
     def send_ready_action(self, time: Optional[float] = None) -> bool:
         """The bot is waiting for a chance to go for the ball.
@@ -137,11 +142,10 @@ class TMCPHandler:
 
         `ready` - Game time when the bot could arrive at the ball (if it was to go for it).
         """
-        if time is None:
-            msg = TMCPMessage.ready_action(self.team, self.index)
-        else:
-            msg = TMCPMessage.ready_action(self.team, self.index, time)
-        return self.send(msg)
+        kwargs = {}
+        if time is not None:
+            kwargs["time"] = time
+        return self.send(TMCPMessage.ready_action(self.team, self.index, **kwargs))
 
     def send_defend_action(self) -> bool:
         """The bot is in a position to defend the goal and is not planning to move up.
