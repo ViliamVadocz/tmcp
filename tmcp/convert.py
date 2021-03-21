@@ -31,4 +31,4 @@ def try_convert_direction(direction: Any) -> List[float]:
                 direction[index] = float(axis)
             return direction
 
-    raise TypeError("Could not convert direction")
+    raise TypeError(f"Could not convert direction, input was {direction}")
