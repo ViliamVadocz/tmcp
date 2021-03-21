@@ -1,8 +1,9 @@
 from enum import Enum
-from typing import Optional, Any
+from typing import Optional
 
 from tmcp import TMCP_VERSION
 from .convert import try_convert_direction
+from .type_check import type_check
 
 
 class ActionType(Enum):
@@ -23,43 +24,49 @@ class TMCPMessage:
     this object will have a `time` attribute.
     """
 
+    @type_check
     def __init__(self, team: int, index: int, action_type: ActionType):
         self.team = team
         self.index = index
         self.action_type = action_type
 
     @classmethod
+    @type_check
     def ball_action(
-        cls, team: int, index: int, time: float = -1.0, direction: Any = [0.0, 0.0, 0.0]
-    ) -> "TMCPMessage":
+        cls, team: int, index: int, time: float = -1.0, direction = [0.0, 0.0, 0.0]
+    ):  # -> TMCPMessage:
         self = cls(team, index, ActionType.BALL)
         self.time = time
         self.direction = try_convert_direction(direction)
         return self
 
     @classmethod
-    def boost_action(cls, team: int, index: int, target: int) -> "TMCPMessage":
+    @type_check
+    def boost_action(cls, team: int, index: int, target: int):  # -> TMCPMessage:
         self = cls(team, index, ActionType.BOOST)
         self.target = target
         return self
 
     @classmethod
+    @type_check
     def demo_action(
         cls, team: int, index: int, target: int, time: float = -1.0
-    ) -> "TMCPMessage":
+    ):  # -> TMCPMessage:
         self = cls(team, index, ActionType.DEMO)
         self.target = target
         self.time = time
         return self
 
     @classmethod
-    def ready_action(cls, team: int, index: int, time: float = -1.0) -> "TMCPMessage":
+    @type_check
+    def ready_action(cls, team: int, index: int, time: float = -1.0):  # -> TMCPMessage:
         self = cls(team, index, ActionType.READY)
         self.time = time
         return self
 
     @classmethod
-    def defend_action(cls, team: int, index: int) -> "TMCPMessage":
+    @type_check
+    def defend_action(cls, team: int, index: int):  # -> TMCPMessage:
         self = cls(team, index, ActionType.DEFEND)
         return self
 
@@ -76,7 +83,11 @@ class TMCPMessage:
 
             if action_type == ActionType.BALL:
                 assert isinstance(action["time"], (float, int))
-                msg = cls.ball_action(team, index, float(action["time"]))
+                direction = action["direction"]
+                assert isinstance(direction, (list, tuple))
+                assert len(direction) in (2, 3)
+                assert all(isinstance(elem, (int, float)) for elem in direction)
+                msg = cls.ball_action(team, index, float(action["time"]), direction)
             elif action_type == ActionType.BOOST:
                 assert isinstance(action["target"], int)
                 msg = cls.boost_action(team, index, action["target"])
@@ -88,10 +99,7 @@ class TMCPMessage:
                 )
             elif action_type == ActionType.READY:
                 assert isinstance(action["time"], (float, int))
-                # assert isinstance(action["direction"], (list, tuple))
-                msg = cls.ready_action(
-                    team, index, float(action["time"]), try_convert_direction(action["direction"])
-                )
+                msg = cls.ready_action(team, index, float(action["time"]))
             elif action_type == ActionType.DEFEND:
                 msg = cls.defend_action(team, index)
             else:
