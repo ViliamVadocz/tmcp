@@ -92,9 +92,6 @@ class TMCPHandler:
         return messages
 
     def parse(self, message: dict) -> Optional[TMCPMessage]:
-        # Ignore messages using a different version of the protocol.
-        if message.get("tmcp_version") != TMCP_VERSION:
-            return None
         # Ignore messages by opposing team.
         if message.get("team") != self.team:
             return None
