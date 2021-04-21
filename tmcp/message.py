@@ -91,6 +91,7 @@ class TMCPMessage:
                 direction = action.get("direction", [0.0, 0.0, 0.0])
                 assert isinstance(direction, (list, tuple))
                 assert len(direction) in (2, 3)
+                if len(direction) == 2: direction.append(0.0)
                 assert all(isinstance(elem, (int, float)) for elem in direction)
                 msg = cls.ball_action(team, index, float(action_time), direction)
             elif action_type == ActionType.BOOST:

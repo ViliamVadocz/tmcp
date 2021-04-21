@@ -1,4 +1,5 @@
 # tmcp
+
 ## Helper classes for the Team Match Communication Protocol
 
 Learn more about [TMCP](https://github.com/RLBot/RLBot/wiki/Team-Match-Communication-Protocol).
@@ -63,15 +64,15 @@ if self.backlog:
         self.backlog.insert(0, backlog_message)
 ```
 
-## Avoiding breaking changes
+## Avoiding major breaking changes
 
 This package is regularly updated according to the latest TMCP specification.
-To avoid your bot breaking during tournaments, you can use a virtual_environment and pin a specific version of this package.
+To avoid your bot breaking during tournaments due to major version updates, you can use a virtual_environment and pin a specific version of this package.
 
 In your requirements.txt:
 
 ```txt
-tmcp==0.9
+tmcp==1.*
 ```
 
 In your bot.cfg:
@@ -88,6 +89,6 @@ This will not send or receive any messages, but will pretend as if it was sendin
 ```py
 from tmcp import TMCP_VERSION
 
-if TMCP_VERSION != [0, 9]:
+if TMCP_VERSION[0] != 1:
     my_handler.disable()
 ```
