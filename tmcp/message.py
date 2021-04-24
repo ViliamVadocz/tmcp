@@ -78,28 +78,37 @@ class TMCPMessage:
             assert isinstance(team, int)
             assert isinstance(index, int)
 
+            version = message["tmcp_version"]
+            assert isinstance(version, (list, tuple))
+            assert len(version) == 2
+            
             action: dict = message["action"]
-            action_type: ActionType = ActionType(action["type"])
+            action_type: ActionType = ActionType(action["type"].upper())
 
             if action_type == ActionType.BALL:
-                assert isinstance(action["time"], (float, int))
-                direction = action["direction"]
+                action_time = action.get("time", -1)
+                assert isinstance(action_time, (float, int))
+                direction = action.get("direction", [0.0, 0.0, 0.0])
                 assert isinstance(direction, (list, tuple))
                 assert len(direction) in (2, 3)
+                if len(direction) == 2:
+                    direction = [direction[0], direction[1], 0.0]
                 assert all(isinstance(elem, (int, float)) for elem in direction)
-                msg = cls.ball_action(team, index, float(action["time"]), direction)
+                msg = cls.ball_action(team, index, float(action_time), direction)
             elif action_type == ActionType.BOOST:
                 assert isinstance(action["target"], int)
                 msg = cls.boost_action(team, index, action["target"])
             elif action_type == ActionType.DEMO:
                 assert isinstance(action["target"], int)
-                assert isinstance(action["time"], (float, int))
+                action_time = action.get("time", -1)
+                assert isinstance(action_time, (float, int))
                 msg = cls.demo_action(
-                    team, index, action["target"], float(action["time"])
+                    team, index, action["target"], float(action_time)
                 )
             elif action_type == ActionType.READY:
-                assert isinstance(action["time"], (float, int))
-                msg = cls.ready_action(team, index, float(action["time"]))
+                action_time = action.get("time", -1)
+                assert isinstance(action_time, (float, int))
+                msg = cls.ready_action(team, index, float(action_time))
             elif action_type == ActionType.DEFEND:
                 msg = cls.defend_action(team, index)
             else:
